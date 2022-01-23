@@ -5,11 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
 #include "Shooter/CrossHair.h"
+#include <Shooter/WeaponInfoWidget.h>
 #include "Components/WidgetComponent.h"
 
 #include "MyHUD.generated.h"
-
-
 
 UCLASS()
 class SHOOTER_API AMyHUD : public AHUD
@@ -24,6 +23,11 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 		TSubclassOf<UUserWidget> CrossHairClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+		TSubclassOf<UUserWidget> WeaponInfoClass;
 private:
 	UCrossHair* CrossHairWidget;
+
+	UWeaponInfoWidget* WeaponInfoWidget;
 };

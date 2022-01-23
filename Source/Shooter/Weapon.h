@@ -36,4 +36,7 @@ public:
 		FName SocketName;
 
 	float BulletSpread;
+	FText* AmmoType;
+	int CurrentTotalAmmo;
+	int CurrentAmmoCount;
 };
