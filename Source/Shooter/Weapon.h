@@ -35,8 +35,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FName SocketName;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FText AmmoType;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int CurrentTotalAmmo;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int CurrentAmmoCount;
+
+
 	float BulletSpread;
-	FText* AmmoType;
-	int CurrentTotalAmmo;
-	int CurrentAmmoCount;
 };

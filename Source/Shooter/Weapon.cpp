@@ -11,7 +11,7 @@ AWeapon::AWeapon()
 	BulletSpread = 50.0f;
 	CurrentTotalAmmo = 30;
 	CurrentAmmoCount = 5;
-	AmmoType->FromString("(AUTO)");
+	AmmoType.FromString(FString("(AUTO)"));
 }
 
 // Called when the game starts or when spawned

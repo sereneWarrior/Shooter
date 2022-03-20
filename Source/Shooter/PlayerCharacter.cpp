@@ -199,7 +199,8 @@ void APlayerCharacter::SwitchWeaponMesh(AWeapon* weapon)
 	UE_LOG(LogTemp, Warning, TEXT("index %d"),Index);
 	if (Index == INDEX_NONE)
 	{
-		UE_LOG(LogTemp, Warning,TEXT("Weapon not in inventory"));
+		//TODO: Check this. It is trigered when first weapon is taken.
+		//UE_LOG(LogTemp, Warning,TEXT("Weapon not in inventory"));
 		return;
 	}
 

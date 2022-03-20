@@ -8,18 +8,32 @@ UWeaponInfoWidget::UWeaponInfoWidget(const FObjectInitializer& ObjectInitializer
 	Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 }
 
+
 void UWeaponInfoWidget::NativeTick(const FGeometry& Geometry, float DeltaTime)
 {
+	Super::NativeTick(Geometry, DeltaTime);
+
+	// TODO: Check cross hair visibility status
+	if (Player->Loadout == ELoadout::HasGun)
+	{
+		Panel->SetVisibility(ESlateVisibility::Visible);
+		return;
+	}
+
+	Panel->SetVisibility(ESlateVisibility::Collapsed);
 	SetCurrentAmmoValue();
 }
 
 void UWeaponInfoWidget::SetCurrentAmmoValue() 
 {
-	// TODO: Move logic to upper level?
+	// TODO: Move logic to upper level? Use blueo
 	if (Player->Loadout == ELoadout::NoWeapon)
 	{
 		return;
 	}
-	AmmoCount->SetText(FText::FromString("Random String"));
-	//Player->CurrentWeapon->CurrentAmmo;
+	auto currentWeapon = Player->CurrentWeapon;
+	AmmoCount->SetText(FText::AsNumber(currentWeapon->CurrentAmmoCount));
+	TotalAmmoCount->SetText(FText::AsNumber(currentWeapon->CurrentTotalAmmo));
+
+	Type->SetText(currentWeapon->AmmoType);
 }

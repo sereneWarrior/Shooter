@@ -6,6 +6,8 @@
 #include "Blueprint/UserWidget.h"
 #include <Shooter/PlayerCharacter.h>
 #include "Components/TextBlock.h"
+#include <Runtime/UMG/Public/Components/CanvasPanel.h>
+
 #include "WeaponInfoWidget.generated.h"
 
 UCLASS()
@@ -25,6 +27,8 @@ protected:
 		class UTextBlock* TotalAmmoCount;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UTextBlock* Type;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+		class UCanvasPanel* Panel;
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
 
