@@ -17,7 +17,8 @@ class SHOOTER_API UWeaponInfoWidget : public UUserWidget
 
 public:
 	UWeaponInfoWidget(const FObjectInitializer& ObjectInitializer);
-
+	
+	void SetCurrentAmmoValue();
 	
 protected:
 
@@ -34,7 +35,4 @@ protected:
 
 private:
 	APlayerCharacter* Player;
-
-	void SetCurrentAmmoValue();
-
 };

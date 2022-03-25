@@ -17,11 +17,12 @@ void UWeaponInfoWidget::NativeTick(const FGeometry& Geometry, float DeltaTime)
 	if (Player->Loadout == ELoadout::HasGun)
 	{
 		Panel->SetVisibility(ESlateVisibility::Visible);
+		SetCurrentAmmoValue();
 		return;
 	}
 
 	Panel->SetVisibility(ESlateVisibility::Collapsed);
-	SetCurrentAmmoValue();
+	
 }
 
 void UWeaponInfoWidget::SetCurrentAmmoValue() 

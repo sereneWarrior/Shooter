@@ -29,6 +29,7 @@ void AMyHUD::BeginPlay()
 	if (!WeaponInfoWidget) return;
 
 	WeaponInfoWidget->AddToViewport();
+	WeaponInfoWidget->SetCurrentAmmoValue();
 }
 
 void AMyHUD::UpdateCrossHairWidget()
