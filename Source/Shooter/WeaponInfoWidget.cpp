@@ -27,14 +27,12 @@ void UWeaponInfoWidget::NativeTick(const FGeometry& Geometry, float DeltaTime)
 
 void UWeaponInfoWidget::SetCurrentAmmoValue() 
 {
-	// TODO: Move logic to upper level? Use blueo
-	if (Player->Loadout == ELoadout::NoWeapon)
-	{
-		return;
-	}
 	auto currentWeapon = Player->CurrentWeapon;
-	AmmoCount->SetText(FText::AsNumber(currentWeapon->CurrentAmmoCount));
-	TotalAmmoCount->SetText(FText::AsNumber(currentWeapon->CurrentTotalAmmo));
+	auto currAmmo = currentWeapon->CurrentAmmoCount;
+	auto totAmmo = currentWeapon->CurrentTotalAmmo;
 
+	Stamina->SetPercent((float) currAmmo/totAmmo);
+	AmmoCount->SetText(FText::AsNumber(currAmmo));
+	TotalAmmoCount->SetText(FText::AsNumber(totAmmo));
 	Type->SetText(currentWeapon->AmmoType);
 }

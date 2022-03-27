@@ -7,6 +7,7 @@
 #include <Shooter/PlayerCharacter.h>
 #include "Components/TextBlock.h"
 #include <Runtime/UMG/Public/Components/CanvasPanel.h>
+#include "Components/ProgressBar.h"
 
 #include "WeaponInfoWidget.generated.h"
 
@@ -30,6 +31,8 @@ protected:
 		class UTextBlock* Type;
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UCanvasPanel* Panel;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+		class UProgressBar* Stamina;
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
 
