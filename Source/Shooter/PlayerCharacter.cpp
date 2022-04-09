@@ -82,7 +82,6 @@ void APlayerCharacter::Interact()
 		return;
 	}
 	UE_LOG(LogTemp, Warning, TEXT("hit"));
-	*HitDetails.GetActor();
 	//DrawDebugLine(GetWorld(), Start, End, FColor::Orange, true, 10.0f);
 	if (AWeaponPickUp* hitActor = Cast<AWeaponPickUp>(HitDetails.GetActor()))
 	{
