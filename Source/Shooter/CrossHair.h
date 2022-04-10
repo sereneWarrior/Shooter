@@ -60,8 +60,10 @@ private:
 	float BulletSpreadHUD;
 	float Target;
 	float FallingTarget;
+	// TODO: Remove player. Get values from MyHud::::UpdateCrossHairWidget() which is called in player;
 	APlayerCharacter* Player;
 	FTimerHandle UnusedHandle;
 
 	void TranslateCrossHair();
+	bool SetPanelVisibility();
 };

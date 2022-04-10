@@ -18,16 +18,7 @@ void UCrossHair::NativeTick(const FGeometry& Geometry, float DeltaTime)
 {
 	Super::NativeTick(Geometry, DeltaTime);
 
-	// TODO: Check cross hair visibility status
-	if (Player->Loadout == ELoadout::HasGun && Player->IsAiming)
-	{ 
-		Panel->SetVisibility(ESlateVisibility::Visible);
-		return;
-	}
-
-	Panel->SetVisibility(ESlateVisibility::Collapsed);
-	
-	
+	SetPanelVisibility();
 }
 
 void UCrossHair::MoveCrossHairs(float target)
@@ -52,6 +43,16 @@ void UCrossHair::MoveCrossHairs(float target)
 	LeftCrossHair->SetRenderTranslation(TranslationLeft);
 }
 
+// CrossHairUpdate handles the change of the crosshair appearance depending on the weapon held bay the player.
+void UCrossHair::CrossHairUpdate()
+{
+	auto isPanelVisible = SetPanelVisibility();
+	if (!isPanelVisible) return;
+
+	BulletSpreadHUD = (Player->CurrentWeapon->BulletSpread / 0.5) * -1;
+	GetWorld()->GetTimerManager().SetTimer(UnusedHandle, this, &UCrossHair::TranslateCrossHair, 0.01f, true);
+}
+
 void UCrossHair::TranslateCrossHair()
 {
 	// If character is falling
@@ -63,31 +64,22 @@ void UCrossHair::TranslateCrossHair()
 	float playerSpeed = Player->GetVelocity().Size();
 	if (playerSpeed > 1.0f)
 	{
-		MoveCrossHairs((playerSpeed * -1)/ 10.0f);
+		MoveCrossHairs((playerSpeed * -1) / 10.0f);
 	}
 	// If character is standing
 	MoveCrossHairs(0);
 }
 
-void UCrossHair::CrossHairUpdate()
+bool UCrossHair::SetPanelVisibility()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Update Crosshair"));
-	auto Loadout = Player->Loadout;
-	// TODO: Add isAiming condition
-	if (Loadout == ELoadout::NoWeapon || Player->IsAiming == false)
+	if (Player->Loadout == ELoadout::NoWeapon|| !Player->IsAiming)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Collapse Crosshair"));
 		Panel->SetVisibility(ESlateVisibility::Collapsed);
-		return;
+		return false;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("View Crosshair"));
+
 	Panel->SetVisibility(ESlateVisibility::Visible);
-
-	BulletSpreadHUD = (Player->CurrentWeapon->BulletSpread / 0.5) * -1;
-	GetWorld()->GetTimerManager().SetTimer(UnusedHandle, this, &UCrossHair::TranslateCrossHair, 0.01f, true);
-
+	return true;
 }
-
-
 
 

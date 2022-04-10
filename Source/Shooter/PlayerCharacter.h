@@ -62,6 +62,7 @@ public:
 	bool IsFirstSlotFilled;
 	bool IsSwitchingWeapon;
 	bool IsReloading;
+	// TODO: Setting ot yet implemented. Comes (probably at a later point in the tutorial.
 	bool IsAiming;
 	class AWeapon* CurrentWeapon;
 	
@@ -70,6 +71,7 @@ public:
 	AWeapon* SpawnWeapon(TSubclassOf<class AWeapon> weaponToSpawn);
 	void EqipWeapon(AWeapon* weapon);
 	void SwitchWeaponMesh(AWeapon* weapon);
+	// TOD: Rename!
 	void EquipW1();
 	void EquipW2();
 	void EquipW3();
