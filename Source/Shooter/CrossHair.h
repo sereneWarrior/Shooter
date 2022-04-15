@@ -51,8 +51,6 @@ protected:
 	UPROPERTY(EditAnywhere)
 	float InterpSpeed;
 
-	void MoveCrossHairs(float target);
-
 	virtual void NativeTick(const FGeometry& MyGeometry, float DeltaTime) override;
 
 private:
@@ -60,10 +58,11 @@ private:
 	float BulletSpreadHUD;
 	float Target;
 	float FallingTarget;
-	// TODO: Remove player. Get values from MyHud::::UpdateCrossHairWidget() which is called in player;
+	
 	APlayerCharacter* Player;
 	FTimerHandle UnusedHandle;
 
 	void TranslateCrossHair();
 	bool SetPanelVisibility();
+	void MoveCrossHairs(float target);
 };

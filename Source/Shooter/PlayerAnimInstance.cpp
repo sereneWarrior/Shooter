@@ -5,22 +5,20 @@
 #include <Runtime/Engine/Classes/Kismet/GameplayStatics.h>
 #include "PlayerCharacter.h"
 
-UPlayerAnimInstance::UPlayerAnimInstance()
-{
-	Speed = 0.0f;
-}
 
 void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
-	Player = Cast<APlayerCharacter>(this->TryGetPawnOwner());
-	if (Player == nullptr) return;
-	Speed = Player->GetVelocity().Size();
 
-	if ( Player->Loadout == ELoadout::NoWeapon) return;
+	auto player = Cast<APlayerCharacter>(this->TryGetPawnOwner());
 
-	CurrentWeaponType = Player->CurrentWeapon->WeaponType;
-	IsSwitchingWeapon = Player->IsSwitchingWeapon;
-	//UE_LOG(LogTemp, Warning, TEXT("Pose %s"), *UEnum::GetValueAsString(CurrentWeaponType));
+	if (player == nullptr) return;
+
+	Speed = player->GetVelocity().Size();
+
+	if ( player->Loadout == ELoadout::NoWeapon) return;
 	
+	// To set the appropriate hand position for the held weapon.
+	CurrentWeaponType = player->CurrentWeapon->WeaponType;
+	IsSwitchingWeapon = player->IsSwitchingWeapon;
 }

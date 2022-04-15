@@ -14,18 +14,13 @@ class SHOOTER_API UPlayerAnimInstance : public UAnimInstance
 	GENERATED_BODY()
 
 public:
-	UPlayerAnimInstance();
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generic")
-		float Speed;
+		float Speed = 0.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generic")
-		EWeaponType CurrentWeaponType = EWeaponType::Pistol;
+		EWeaponType CurrentWeaponType;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Generic")
-		bool IsSwitchingWeapon;
+		bool IsSwitchingWeapon = false;
 		
 protected:
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
-
-private:
-	APlayerCharacter* Player;
 };

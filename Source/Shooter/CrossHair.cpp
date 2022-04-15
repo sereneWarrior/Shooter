@@ -58,7 +58,7 @@ void UCrossHair::TranslateCrossHair()
 	// If character is falling
 	if (Player->GetCharacterMovement()->IsFalling())
 	{
-		// TODO Not working
+		// TODO: Is Falling is not yet used by PlayerCharacter.
 		MoveCrossHairs(FallingTarget);
 	}
 	float playerSpeed = Player->GetVelocity().Size();

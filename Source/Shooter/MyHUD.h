@@ -19,6 +19,7 @@ class SHOOTER_API AMyHUD : public AHUD
 public:
 	virtual void DrawHUD() override;
 	virtual void BeginPlay() override;
+
 	void UpdateCrossHairWidget();
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
@@ -26,6 +27,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 		TSubclassOf<UUserWidget> WeaponInfoClass;
+
 private:
 	UCrossHair* CrossHairWidget;
 
