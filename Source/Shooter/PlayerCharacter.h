@@ -38,6 +38,8 @@ protected:
 private:
 	FTimerHandle UnusedHandle;
 
+	AWeapon* HandleWeaponSpawning(TSubclassOf<class AWeapon> weapon, USkeletalMeshComponent* armsMesh);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

@@ -30,6 +30,17 @@ void APlayerCharacter::BeginPlay()
 	
 }
 
+AWeapon* APlayerCharacter::HandleWeaponSpawning(TSubclassOf<class AWeapon> weaponClass, USkeletalMeshComponent* armsMesh)
+{
+	auto weapon = GetWorld()->SpawnActor<AWeapon>(weaponClass);
+	UE_LOG(LogTemp, Log, TEXT("Spawning  %s"), *UEnum::GetDisplayValueAsText(weapon->WeaponType).ToString());
+	Weapons.Emplace(weapon);
+	weapon->AttachToComponent(armsMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, "ShotgunSocket");
+
+	EqipWeapon(weapon);
+	return weapon;
+}
+
 // Called every frame
 void APlayerCharacter::Tick(float DeltaTime)
 {
@@ -78,14 +89,14 @@ void APlayerCharacter::Interact()
 	
 	if (!bIsHit)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("No hit"));
+		UE_LOG(LogTemp, Log, TEXT("No hit"));
 		return;
 	}
-	UE_LOG(LogTemp, Warning, TEXT("hit"));
+	UE_LOG(LogTemp, Log, TEXT("hit"));
 	
 	if (AWeaponPickUp* hitActor = Cast<AWeaponPickUp>(HitDetails.GetActor()))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Hit %s"), *hitActor->GetName());
+		UE_LOG(LogTemp, Log, TEXT("Hit %s"), *hitActor->GetName());
 		hitActor->OnIntateraction();
 	}
 	
@@ -102,39 +113,21 @@ AWeapon* APlayerCharacter::SpawnWeapon(TSubclassOf<class AWeapon> weaponToSpawn)
 
 	// TODO: Isn't it possible to have something like weaponToSpawn = EWeapon::Pistol
 	
+	auto weaponName = weaponToSpawn->GetName();
 	// Which apecific obect is weaponToSpawn:
-	if (weaponToSpawn->GetName() == PistolClass->GetName())
+	if (weaponName == PistolClass->GetName())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Spawn Pistol"));
-		auto weapon = GetWorld()->SpawnActor<AWeapon>(PistolClass);
-		Weapons.Emplace(weapon);
-		weapon->AttachToComponent(ArmsMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, "PistolSocket");
-		
-		EqipWeapon(weapon);
-		return weapon;
+		return HandleWeaponSpawning(PistolClass, ArmsMesh);
 	}
 	if (weaponToSpawn->GetName() == ShotgunClass->GetName())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Spawn ShotGun"));
-		auto weapon = GetWorld()->SpawnActor<AWeapon>(ShotgunClass);
-		Weapons.Emplace(weapon);
-		weapon->AttachToComponent(ArmsMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, "ShotgunSocket");
-		
-		EqipWeapon(weapon);
-		return weapon;
+		return HandleWeaponSpawning(ShotgunClass, ArmsMesh);
 	}
 	if (weaponToSpawn->GetName() == AutoRifleClass->GetName())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Spawn AutoRifle"));
-		auto weapon = GetWorld()->SpawnActor<AWeapon>(AutoRifleClass);
-		Weapons.Add(weapon);
-		weapon->AttachToComponent(ArmsMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, "AutoRifleSocket");
-		
-		EqipWeapon(weapon);
-		return weapon;
+		return HandleWeaponSpawning(AutoRifleClass, ArmsMesh);
 	}
 	
-	//UE_LOG(LogTemp, Warning, TEXT("Socket %s"), *weapon->SocketName.ToString());
 	UE_LOG(LogTemp, Error, TEXT("No weapon matched"));
 	checkNoEntry();
 	return nullptr;
@@ -144,27 +137,27 @@ AWeapon* APlayerCharacter::SpawnWeapon(TSubclassOf<class AWeapon> weaponToSpawn)
 void APlayerCharacter::EquipW1()
 {
 	if (!Weapons.IsValidIndex(0)) return;
-	UE_LOG(LogTemp, Warning, TEXT("Eqip %s"), *Weapons[0]->GetName());
+	UE_LOG(LogTemp, Log, TEXT("Eqip %s"), *Weapons[0]->GetName());
 	EqipWeapon(Weapons[0]);
 }
 
 void APlayerCharacter::EquipW2()
 {
 	if (!Weapons.IsValidIndex(1))  return;
-	UE_LOG(LogTemp, Warning, TEXT("Eqip %s"), *Weapons[1]->GetName());
+	UE_LOG(LogTemp, Log, TEXT("Eqip %s"), *Weapons[1]->GetName());
 	EqipWeapon(Weapons[1]);
 }
 
 void APlayerCharacter::EquipW3()
 {
 	if (!Weapons.IsValidIndex(2))  return;
-	UE_LOG(LogTemp, Warning, TEXT("Eqip %s"), *Weapons[2]->GetName());
+	UE_LOG(LogTemp, Log, TEXT("Eqip %s"), *Weapons[2]->GetName());
 	EqipWeapon(Weapons[2]);
 }
 
 void APlayerCharacter::EqipWeapon(AWeapon* weapon)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Eqips Weapon"));
+	UE_LOG(LogTemp, Log, TEXT("Eqips Weapon"));
 	if (IsSwitchingWeapon) return;
 
 	if (IsReloading) IsReloading = false;
@@ -190,17 +183,17 @@ void APlayerCharacter::SwitchWeaponMesh(AWeapon* weapon)
 	
 	int32 Index;
 	Weapons.Find(weapon, Index);
-	UE_LOG(LogTemp, Warning, TEXT("index %d"),Index);
+	UE_LOG(LogTemp, Log, TEXT("index %d"),Index);
 	if (Index == INDEX_NONE)
 	{
 		//TODO: Check this. It is trigered when first weapon is taken.
-		//UE_LOG(LogTemp, Warning,TEXT("Weapon not in inventory"));
+		//UE_LOG(LogTemp, Log,TEXT("Weapon not in inventory"));
 		return;
 	}
 
 	if (CurrentWeapon == nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("First weapon"));
+		UE_LOG(LogTemp, Log, TEXT("First weapon"));
 		Loadout = ELoadout::HasGun;
 		CurrentWeapon = weapon;
 		if (MyHud)
@@ -212,12 +205,12 @@ void APlayerCharacter::SwitchWeaponMesh(AWeapon* weapon)
 
 	if (CurrentWeapon == weapon)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Weapon is already current weapon"));
+		UE_LOG(LogTemp, Log, TEXT("Weapon is already current weapon"));
 		return;
 	}
 	CurrentWeapon->SetActorHiddenInGame(true);
 		
-	UE_LOG(LogTemp, Warning, TEXT("Switching wepon from %s to %s"), *CurrentWeapon->GetName(), *Weapons[Index]->GetName());
+	UE_LOG(LogTemp, Log, TEXT("Switching wepon from %s to %s"), *CurrentWeapon->GetName(), *Weapons[Index]->GetName());
 	
 	Weapons[Index]->SetActorHiddenInGame(false);
 	Loadout = ELoadout::HasGun;
