@@ -82,7 +82,7 @@ void APlayerCharacter::Interact()
 		return;
 	}
 	UE_LOG(LogTemp, Warning, TEXT("hit"));
-	//DrawDebugLine(GetWorld(), Start, End, FColor::Orange, true, 10.0f);
+	
 	if (AWeaponPickUp* hitActor = Cast<AWeaponPickUp>(HitDetails.GetActor()))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Hit %s"), *hitActor->GetName());
@@ -93,23 +93,16 @@ void APlayerCharacter::Interact()
 
 AWeapon* APlayerCharacter::SpawnWeapon(TSubclassOf<class AWeapon> weaponToSpawn)
 {
-	//TODO Refactor
-	auto ArmsMesh = Cast<USkeletalMeshComponent>(this->GetDefaultSubobjectByName(TEXT("PlayerArms")));
-	if (weaponToSpawn == nullptr)
-	{
-		UE_LOG(LogTemp, Error, TEXT("No Weapon to Spawn."));
-		return nullptr;
-	}
-	if (ArmsMesh == nullptr)
-	{
-		UE_LOG(LogTemp, Error, TEXT("Error getting mesh component."));
-		return nullptr;
-	}
+	check(weaponToSpawn);
 
+	USkeletalMeshComponent* ArmsMesh;
+	verify((ArmsMesh = Cast<USkeletalMeshComponent>(this->GetDefaultSubobjectByName(TEXT("PlayerArms")))) != NULL);
 	
 	//IsFirstSlotFilled = true;
 
-	//Spawns weapon not subclass
+	// TODO: Isn't it possible to have something like weaponToSpawn = EWeapon::Pistol
+	
+	// Which apecific obect is weaponToSpawn:
 	if (weaponToSpawn->GetName() == PistolClass->GetName())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Spawn Pistol"));
@@ -143,6 +136,7 @@ AWeapon* APlayerCharacter::SpawnWeapon(TSubclassOf<class AWeapon> weaponToSpawn)
 	
 	//UE_LOG(LogTemp, Warning, TEXT("Socket %s"), *weapon->SocketName.ToString());
 	UE_LOG(LogTemp, Error, TEXT("No weapon matched"));
+	checkNoEntry();
 	return nullptr;
 }
 
