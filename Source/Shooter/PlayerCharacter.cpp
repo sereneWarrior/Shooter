@@ -33,7 +33,7 @@ void APlayerCharacter::BeginPlay()
 AWeapon* APlayerCharacter::HandleWeaponSpawning(TSubclassOf<class AWeapon> weaponClass, USkeletalMeshComponent* armsMesh)
 {
 	auto weapon = GetWorld()->SpawnActor<AWeapon>(weaponClass);
-	UE_LOG(LogTemp, Log, TEXT("Spawning  %s"), *UEnum::GetDisplayValueAsText(weapon->WeaponType).ToString());
+	UE_LOG(LogTemp, Log, TEXT("Spawning %s"), *UEnum::GetDisplayValueAsText(weapon->WeaponType).ToString());
 	Weapons.Emplace(weapon);
 	weapon->AttachToComponent(armsMesh, FAttachmentTransformRules::SnapToTargetIncludingScale, "ShotgunSocket");
 
@@ -94,6 +94,7 @@ void APlayerCharacter::Interact()
 	}
 	UE_LOG(LogTemp, Log, TEXT("hit"));
 	
+	// TODO: Change to assertion. Maybe refactor logging.
 	if (AWeaponPickUp* hitActor = Cast<AWeaponPickUp>(HitDetails.GetActor()))
 	{
 		UE_LOG(LogTemp, Log, TEXT("Hit %s"), *hitActor->GetName());
@@ -107,11 +108,11 @@ AWeapon* APlayerCharacter::SpawnWeapon(TSubclassOf<class AWeapon> weaponToSpawn)
 	check(weaponToSpawn);
 
 	USkeletalMeshComponent* ArmsMesh;
-	verify((ArmsMesh = Cast<USkeletalMeshComponent>(this->GetDefaultSubobjectByName(TEXT("PlayerArms")))) != NULL);
+	verify((ArmsMesh = Cast<USkeletalMeshComponent>(this->GetDefaultSubobjectByName(TEXT("PlayerArms")))) != nullptr);
 	
 	//IsFirstSlotFilled = true;
 
-	// TODO: Isn't it possible to have something like weaponToSpawn = EWeapon::Pistol
+	// TODO: Isn't it possible to have something like weaponToSpawn = EWeapon::Pistol?
 	
 	auto weaponName = weaponToSpawn->GetName();
 	// Which apecific obect is weaponToSpawn:
@@ -134,6 +135,7 @@ AWeapon* APlayerCharacter::SpawnWeapon(TSubclassOf<class AWeapon> weaponToSpawn)
 }
 
 //TODO: REfactor Equip methods
+// TODO: Change to assertion. Maybe refactor logging.
 void APlayerCharacter::EquipW1()
 {
 	if (!Weapons.IsValidIndex(0)) return;
@@ -171,47 +173,39 @@ void APlayerCharacter::EqipWeapon(AWeapon* weapon)
 }
 
 	
-
 void APlayerCharacter::SwitchWeaponMesh(AWeapon* weapon)
 {
-	AMyHUD* MyHud = Cast<AMyHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-	
-	//Hide current weapon mesh and show new weapon mesh
+	check(weapon != nullptr);
 
-	// TODO: Implement go to next weaopn slot
-	// TODO: REfactor!!!!!!
-	
+	AMyHUD* MyHud; 
 	int32 Index;
-	Weapons.Find(weapon, Index);
-	UE_LOG(LogTemp, Log, TEXT("index %d"),Index);
-	if (Index == INDEX_NONE)
-	{
-		//TODO: Check this. It is trigered when first weapon is taken.
-		//UE_LOG(LogTemp, Log,TEXT("Weapon not in inventory"));
-		return;
-	}
-
-	if (CurrentWeapon == nullptr)
-	{
-		UE_LOG(LogTemp, Log, TEXT("First weapon"));
-		Loadout = ELoadout::HasGun;
-		CurrentWeapon = weapon;
-		if (MyHud)
-		{
-			MyHud->UpdateCrossHairWidget();
-		}
-		return;
-	}
-
-	if (CurrentWeapon == weapon)
-	{
-		UE_LOG(LogTemp, Log, TEXT("Weapon is already current weapon"));
-		return;
-	}
-	CurrentWeapon->SetActorHiddenInGame(true);
-		
-	UE_LOG(LogTemp, Log, TEXT("Switching wepon from %s to %s"), *CurrentWeapon->GetName(), *Weapons[Index]->GetName());
+	verify((MyHud = Cast<AMyHUD>(GetWorld()->GetFirstPlayerController()->GetHUD())) != nullptr);
 	
+	// Find the index of the current weapon in Weapon array
+	
+
+	// TODO: Would it make sense to fill array dynamically? If weapon is not in array add it?
+	verify(Weapons.Find(weapon, Index));
+	UE_LOG(LogTemp, Log, TEXT("Current weapon index: %d"), Index);
+	checkf(CurrentWeapon != weapon, TEXT("Weapon is already current weapon"));
+
+	//Hide current weapon mesh and show new weapon mesh
+	//Handle from empty Loadout to Weapon:
+	if (CurrentWeapon == nullptr) // TODO: Using Assertion?
+	{
+		UE_LOG(LogTemp, Log, TEXT("First weapon set"));
+	}
+	else
+	{
+		// If there was a weapon held hide it's mesh.
+		CurrentWeapon->SetActorHiddenInGame(true);
+		
+		UE_LOG(LogTemp, Log, TEXT("Switching wepon from %s to %s"),
+			*UEnum::GetDisplayValueAsText(CurrentWeapon->WeaponType).ToString(),
+			*UEnum::GetDisplayValueAsText(Weapons[Index]->WeaponType).ToString());
+	}
+	
+	// Show the weapon that was equiped.
 	Weapons[Index]->SetActorHiddenInGame(false);
 	Loadout = ELoadout::HasGun;
 	CurrentWeapon = weapon;
@@ -219,7 +213,6 @@ void APlayerCharacter::SwitchWeaponMesh(AWeapon* weapon)
 	{
 		MyHud->UpdateCrossHairWidget();
 	}
-
 }
 
 
