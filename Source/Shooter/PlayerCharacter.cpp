@@ -137,11 +137,12 @@ AWeapon* APlayerCharacter::SpawnWeapon(TSubclassOf<class AWeapon> weaponToSpawn)
 
 void APlayerCharacter::Equip(int weaponKey)
 {
-}
 
 	if (!Weapons.IsValidIndex(weaponKey))  return;
 	UE_LOG(LogTemp, Log, TEXT("Eqip %s"), *Weapons[weaponKey]->GetName());
 	// TODO: Create TMap to store weapons and associated weapon slot.
+	// TODO: Don't call if current weapon equals weapon.
+	EqipWeapon(Weapons[weaponKey]);
 }
 
 void APlayerCharacter::EqipWeapon(AWeapon* weapon)
@@ -162,7 +163,7 @@ void APlayerCharacter::EqipWeapon(AWeapon* weapon)
 	
 void APlayerCharacter::SwitchWeaponMesh(AWeapon* weapon)
 {
-	/*check(weapon != nullptr);
+	check(weapon != nullptr);
 
 	AMyHUD* MyHud; 
 	int32 Index;
@@ -174,8 +175,9 @@ void APlayerCharacter::SwitchWeaponMesh(AWeapon* weapon)
 	UE_LOG(LogTemp, Log, TEXT("Current weapon index: %d"), Index);
 
 	// It should not happen that a wepon that is already active ist equiped. But if it happens log it.
-	if (ensureMsgf(CurrentWeapon != weapon, TEXT("Ran SwitchWeaponMesh with current weapon equal to new weapon.")))
+	if (CurrentWeapon == weapon)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Tried to set a weapon thats already active"));
 		return;
 	}
 
@@ -196,51 +198,6 @@ void APlayerCharacter::SwitchWeaponMesh(AWeapon* weapon)
 	}
 	
 	// Show the weapon that was equiped.
-	Weapons[Index]->SetActorHiddenInGame(false);
-	Loadout = ELoadout::HasGun;
-	CurrentWeapon = weapon;
-	if (MyHud)
-	{
-		MyHud->UpdateCrossHairWidget();
-	}*/
-	AMyHUD* MyHud = Cast<AMyHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-
-	//Hide current weapon mesh and show new weapon mesh
-
-	// TODO: Implement go to next weaopn slot
-	// TODO: REfactor!!!!!!
-
-	int32 Index;
-	Weapons.Find(weapon, Index);
-	UE_LOG(LogTemp, Log, TEXT("index %d"), Index);
-	if (Index == INDEX_NONE)
-	{
-		//TODO: Check this. It is trigered when first weapon is taken.
-		//UE_LOG(LogTemp, Log,TEXT("Weapon not in inventory"));
-		return;
-	}
-
-	if (CurrentWeapon == nullptr)
-	{
-		UE_LOG(LogTemp, Log, TEXT("First weapon"));
-		Loadout = ELoadout::HasGun;
-		CurrentWeapon = weapon;
-		if (MyHud)
-		{
-			MyHud->UpdateCrossHairWidget();
-		}
-		return;
-	}
-
-	if (CurrentWeapon == weapon)
-	{
-		UE_LOG(LogTemp, Log, TEXT("Weapon is already current weapon"));
-		return;
-	}
-	CurrentWeapon->SetActorHiddenInGame(true);
-
-	UE_LOG(LogTemp, Log, TEXT("Switching wepon from %s to %s"), *CurrentWeapon->GetName(), *Weapons[Index]->GetName());
-
 	Weapons[Index]->SetActorHiddenInGame(false);
 	Loadout = ELoadout::HasGun;
 	CurrentWeapon = weapon;
