@@ -16,6 +16,10 @@ enum class ELoadout : uint8
 	NoWeapon,
 	HasGun
 };
+// Here thethe vale the Action key should pass in when the Input is pressed is defined. 
+// It uses an int32 as an Index to the Weapon Slot.
+// https://amiransari09.medium.com/unreal-engine-advance-key-binding-653266e1db22
+DECLARE_DELEGATE_OneParam(FInputSwitchWeaponDelegate, int);
 
 UCLASS()
 class SHOOTER_API APlayerCharacter : public ACharacter
@@ -39,6 +43,7 @@ private:
 	FTimerHandle UnusedHandle;
 
 	AWeapon* HandleWeaponSpawning(TSubclassOf<class AWeapon> weapon, USkeletalMeshComponent* armsMesh);
+	void Equip(int weaponKey);
 
 public:	
 	// Called every frame
@@ -61,6 +66,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 		TSubclassOf<AWeapon> AutoRifleClass;
 
+
 	bool IsFirstSlotFilled;
 	bool IsSwitchingWeapon;
 	bool IsReloading;
@@ -73,8 +79,4 @@ public:
 	AWeapon* SpawnWeapon(TSubclassOf<class AWeapon> weaponToSpawn);
 	void EqipWeapon(AWeapon* weapon);
 	void SwitchWeaponMesh(AWeapon* weapon);
-	// TOD: Rename!
-	void EquipW1();
-	void EquipW2();
-	void EquipW3();
 };

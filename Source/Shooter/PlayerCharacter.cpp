@@ -6,6 +6,7 @@
 #include <Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h>
 #include <Runtime/Engine/Public/DrawDebugHelpers.h>
 #include "Shooter/MyHUD.h"
+#include <Shooter/PlayerCharacter.h>
 
 
 
@@ -59,9 +60,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("Turn", this, &APlayerCharacter::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::AddControllerPitchInput);
 
-	PlayerInputComponent->BindAction("Weapon1", IE_Pressed, this, &APlayerCharacter::EquipW1);
-	PlayerInputComponent->BindAction("Weapon2", IE_Pressed, this, &APlayerCharacter::EquipW2);
-	PlayerInputComponent->BindAction("Weapon3", IE_Pressed, this, &APlayerCharacter::EquipW3);
+	PlayerInputComponent->BindAction<FInputSwitchWeaponDelegate>("Weapon1", IE_Pressed, this, &APlayerCharacter::Equip, 0);
+	PlayerInputComponent->BindAction<FInputSwitchWeaponDelegate>("Weapon2", IE_Pressed, this, &APlayerCharacter::Equip, 1);
+	PlayerInputComponent->BindAction<FInputSwitchWeaponDelegate>("Weapon3", IE_Pressed, this, &APlayerCharacter::Equip, 2);
 
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &APlayerCharacter::Interact);
 }
@@ -134,27 +135,13 @@ AWeapon* APlayerCharacter::SpawnWeapon(TSubclassOf<class AWeapon> weaponToSpawn)
 	return nullptr;
 }
 
-//TODO: REfactor Equip methods
-// TODO: Change to assertion. Maybe refactor logging.
-void APlayerCharacter::EquipW1()
+void APlayerCharacter::Equip(int weaponKey)
 {
-	if (!Weapons.IsValidIndex(0)) return;
-	UE_LOG(LogTemp, Log, TEXT("Eqip %s"), *Weapons[0]->GetName());
-	EqipWeapon(Weapons[0]);
 }
 
-void APlayerCharacter::EquipW2()
-{
-	if (!Weapons.IsValidIndex(1))  return;
-	UE_LOG(LogTemp, Log, TEXT("Eqip %s"), *Weapons[1]->GetName());
-	EqipWeapon(Weapons[1]);
-}
-
-void APlayerCharacter::EquipW3()
-{
-	if (!Weapons.IsValidIndex(2))  return;
-	UE_LOG(LogTemp, Log, TEXT("Eqip %s"), *Weapons[2]->GetName());
-	EqipWeapon(Weapons[2]);
+	if (!Weapons.IsValidIndex(weaponKey))  return;
+	UE_LOG(LogTemp, Log, TEXT("Eqip %s"), *Weapons[weaponKey]->GetName());
+	// TODO: Create TMap to store weapons and associated weapon slot.
 }
 
 void APlayerCharacter::EqipWeapon(AWeapon* weapon)
@@ -175,23 +162,26 @@ void APlayerCharacter::EqipWeapon(AWeapon* weapon)
 	
 void APlayerCharacter::SwitchWeaponMesh(AWeapon* weapon)
 {
-	check(weapon != nullptr);
+	/*check(weapon != nullptr);
 
 	AMyHUD* MyHud; 
 	int32 Index;
 	verify((MyHud = Cast<AMyHUD>(GetWorld()->GetFirstPlayerController()->GetHUD())) != nullptr);
 	
-	// Find the index of the current weapon in Weapon array
-	
-
+	// Find the index of the current weapon in Weapon array.
 	// TODO: Would it make sense to fill array dynamically? If weapon is not in array add it?
-	verify(Weapons.Find(weapon, Index));
+	verify(Weapons.Find(weapon, Index)); // Program stops if weapon not in array!
 	UE_LOG(LogTemp, Log, TEXT("Current weapon index: %d"), Index);
-	checkf(CurrentWeapon != weapon, TEXT("Weapon is already current weapon"));
+
+	// It should not happen that a wepon that is already active ist equiped. But if it happens log it.
+	if (ensureMsgf(CurrentWeapon != weapon, TEXT("Ran SwitchWeaponMesh with current weapon equal to new weapon.")))
+	{
+		return;
+	}
 
 	//Hide current weapon mesh and show new weapon mesh
 	//Handle from empty Loadout to Weapon:
-	if (CurrentWeapon == nullptr) // TODO: Using Assertion?
+	if (CurrentWeapon == nullptr)
 	{
 		UE_LOG(LogTemp, Log, TEXT("First weapon set"));
 	}
@@ -206,6 +196,51 @@ void APlayerCharacter::SwitchWeaponMesh(AWeapon* weapon)
 	}
 	
 	// Show the weapon that was equiped.
+	Weapons[Index]->SetActorHiddenInGame(false);
+	Loadout = ELoadout::HasGun;
+	CurrentWeapon = weapon;
+	if (MyHud)
+	{
+		MyHud->UpdateCrossHairWidget();
+	}*/
+	AMyHUD* MyHud = Cast<AMyHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+
+	//Hide current weapon mesh and show new weapon mesh
+
+	// TODO: Implement go to next weaopn slot
+	// TODO: REfactor!!!!!!
+
+	int32 Index;
+	Weapons.Find(weapon, Index);
+	UE_LOG(LogTemp, Log, TEXT("index %d"), Index);
+	if (Index == INDEX_NONE)
+	{
+		//TODO: Check this. It is trigered when first weapon is taken.
+		//UE_LOG(LogTemp, Log,TEXT("Weapon not in inventory"));
+		return;
+	}
+
+	if (CurrentWeapon == nullptr)
+	{
+		UE_LOG(LogTemp, Log, TEXT("First weapon"));
+		Loadout = ELoadout::HasGun;
+		CurrentWeapon = weapon;
+		if (MyHud)
+		{
+			MyHud->UpdateCrossHairWidget();
+		}
+		return;
+	}
+
+	if (CurrentWeapon == weapon)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Weapon is already current weapon"));
+		return;
+	}
+	CurrentWeapon->SetActorHiddenInGame(true);
+
+	UE_LOG(LogTemp, Log, TEXT("Switching wepon from %s to %s"), *CurrentWeapon->GetName(), *Weapons[Index]->GetName());
+
 	Weapons[Index]->SetActorHiddenInGame(false);
 	Loadout = ELoadout::HasGun;
 	CurrentWeapon = weapon;
