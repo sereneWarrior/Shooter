@@ -15,11 +15,9 @@ APlayerCharacter::APlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	//TODO: REmove if not needed
-	IsFirstSlotFilled = false;
 	IsReloading = false;
 	IsSwitchingWeapon = false;
-	// TODO: It's not set yet but used in the Cross hair logic s. The default true should be temprary
+	// TODO: It's not being set yet but used in the Cross hair logic.
 	IsAiming = true;
 	CurrentWeapon = nullptr;
 }
@@ -137,19 +135,17 @@ AWeapon* APlayerCharacter::SpawnWeapon(TSubclassOf<class AWeapon> weaponToSpawn)
 
 void APlayerCharacter::Equip(int weaponKey)
 {
-
 	if (!Weapons.IsValidIndex(weaponKey))  return;
-	UE_LOG(LogTemp, Log, TEXT("Eqip %s"), *Weapons[weaponKey]->GetName());
+	if (CurrentWeapon == Weapons[weaponKey]) return;
 	// TODO: Create TMap to store weapons and associated weapon slot.
-	// TODO: Don't call if current weapon equals weapon.
 	EqipWeapon(Weapons[weaponKey]);
 }
 
 void APlayerCharacter::EqipWeapon(AWeapon* weapon)
 {
-	UE_LOG(LogTemp, Log, TEXT("Eqips Weapon"));
 	if (IsSwitchingWeapon) return;
-
+	UE_LOG(LogTemp, Log, TEXT("Eqips %s"), *UEnum::GetDisplayValueAsText(weapon->WeaponType).ToString());
+	
 	if (IsReloading) IsReloading = false;
 
 	IsSwitchingWeapon = true;

@@ -66,8 +66,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 		TSubclassOf<AWeapon> AutoRifleClass;
 
-
-	bool IsFirstSlotFilled;
 	bool IsSwitchingWeapon;
 	bool IsReloading;
 	// TODO: Setting ot yet implemented. Comes (probably at a later point in the tutorial.
