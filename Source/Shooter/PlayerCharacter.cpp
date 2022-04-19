@@ -13,8 +13,6 @@
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
 	IsReloading = false;
 	IsSwitchingWeapon = false;
 	// TODO: It's not being set yet but used in the Cross hair logic.
@@ -40,13 +38,6 @@ AWeapon* APlayerCharacter::HandleWeaponSpawning(TSubclassOf<class AWeapon> weapo
 	return weapon;
 }
 
-// Called every frame
-void APlayerCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
 // Called to bind functionality to input
 void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -58,9 +49,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	PlayerInputComponent->BindAxis("Turn", this, &APlayerCharacter::AddControllerYawInput);
 	PlayerInputComponent->BindAxis("LookUp", this, &APlayerCharacter::AddControllerPitchInput);
 
-	PlayerInputComponent->BindAction<FInputSwitchWeaponDelegate>("Weapon1", IE_Pressed, this, &APlayerCharacter::Equip, 0);
-	PlayerInputComponent->BindAction<FInputSwitchWeaponDelegate>("Weapon2", IE_Pressed, this, &APlayerCharacter::Equip, 1);
-	PlayerInputComponent->BindAction<FInputSwitchWeaponDelegate>("Weapon3", IE_Pressed, this, &APlayerCharacter::Equip, 2);
+	PlayerInputComponent->BindAction<FInputSwitchWeaponDelegate>("Weapon1", IE_Pressed, this, &APlayerCharacter::HandleWeaponSlotInput, 0);
+	PlayerInputComponent->BindAction<FInputSwitchWeaponDelegate>("Weapon2", IE_Pressed, this, &APlayerCharacter::HandleWeaponSlotInput, 1);
+	PlayerInputComponent->BindAction<FInputSwitchWeaponDelegate>("Weapon3", IE_Pressed, this, &APlayerCharacter::HandleWeaponSlotInput, 2);
 
 	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &APlayerCharacter::Interact);
 }
@@ -84,7 +75,6 @@ void APlayerCharacter::Interact()
 		End,
 		ECC_Visibility,
 		TraceParams);
-
 	
 	if (!bIsHit)
 	{
@@ -99,7 +89,6 @@ void APlayerCharacter::Interact()
 		UE_LOG(LogTemp, Log, TEXT("Hit %s"), *hitActor->GetName());
 		hitActor->OnIntateraction();
 	}
-	
 }
 
 AWeapon* APlayerCharacter::SpawnWeapon(TSubclassOf<class AWeapon> weaponToSpawn)
@@ -114,7 +103,7 @@ AWeapon* APlayerCharacter::SpawnWeapon(TSubclassOf<class AWeapon> weaponToSpawn)
 	// TODO: Isn't it possible to have something like weaponToSpawn = EWeapon::Pistol?
 	
 	auto weaponName = weaponToSpawn->GetName();
-	// Which apecific obect is weaponToSpawn:
+	// Which specific child class of AWeapon is weaponToSpawn of:
 	if (weaponName == PistolClass->GetName())
 	{
 		return HandleWeaponSpawning(PistolClass, ArmsMesh);
@@ -133,12 +122,12 @@ AWeapon* APlayerCharacter::SpawnWeapon(TSubclassOf<class AWeapon> weaponToSpawn)
 	return nullptr;
 }
 
-void APlayerCharacter::Equip(int weaponKey)
+void APlayerCharacter::HandleWeaponSlotInput(int slotNumber)
 {
-	if (!Weapons.IsValidIndex(weaponKey))  return;
-	if (CurrentWeapon == Weapons[weaponKey]) return;
+	if (!Weapons.IsValidIndex(slotNumber))  return;
+	if (CurrentWeapon == Weapons[slotNumber]) return;
 	// TODO: Create TMap to store weapons and associated weapon slot.
-	EqipWeapon(Weapons[weaponKey]);
+	EqipWeapon(Weapons[slotNumber]);
 }
 
 void APlayerCharacter::EqipWeapon(AWeapon* weapon)
@@ -156,7 +145,6 @@ void APlayerCharacter::EqipWeapon(AWeapon* weapon)
 		}, 0.33f, 1);
 }
 
-	
 void APlayerCharacter::SwitchWeaponMesh(AWeapon* weapon)
 {
 	check(weapon != nullptr);
@@ -202,7 +190,6 @@ void APlayerCharacter::SwitchWeaponMesh(AWeapon* weapon)
 		MyHud->UpdateCrossHairWidget();
 	}
 }
-
 
 void APlayerCharacter::MoveForward(float Value)
 {

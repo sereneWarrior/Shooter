@@ -43,12 +43,9 @@ private:
 	FTimerHandle UnusedHandle;
 
 	AWeapon* HandleWeaponSpawning(TSubclassOf<class AWeapon> weapon, USkeletalMeshComponent* armsMesh);
-	void Equip(int weaponKey);
+	void HandleWeaponSlotInput(int weaponKey);
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
