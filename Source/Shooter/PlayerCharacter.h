@@ -4,9 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Weapon.h"
 #include "TimerManager.h"
 
+#include "Weapon.h"
+#include "WeaponPickUp.h"
 
 #include "PlayerCharacter.generated.h"
 
@@ -27,30 +28,32 @@ class SHOOTER_API APlayerCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this character's properties
 	APlayerCharacter();
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	void MoveForward(float Value);
-
 	void MoveRight(float Value);
-
 
 private:
 	FTimerHandle UnusedHandle;
 
 	AWeapon* HandleWeaponSpawning(TSubclassOf<class AWeapon> weapon, USkeletalMeshComponent* armsMesh);
 	void HandleWeaponSlotInput(int weaponKey);
+	
+	void EqipWeapon(AWeapon* weapon);
+	AWeapon* SpawnWeapon(TSubclassOf<class AWeapon> weaponToSpawn);
+	void SwitchWeaponMesh(AWeapon* weapon);
+
+	TArray<AWeapon*> Weapons;
 
 public:	
-	// Called to bind functionality to input
+	// Called to bind functionality to input.
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void Interact();
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 		ELoadout Loadout = ELoadout::NoWeapon;
 
@@ -63,15 +66,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon")
 		TSubclassOf<AWeapon> AutoRifleClass;
 
-	bool IsSwitchingWeapon;
 	bool IsReloading;
-	// TODO: Setting ot yet implemented. Comes (probably at a later point in the tutorial.
+	// TODO: Setting ot yet implemented. Comes probably at a later point in the tutorial.
 	bool IsAiming;
 	class AWeapon* CurrentWeapon;
-	
-	TArray<AWeapon*> Weapons;
-	
-	AWeapon* SpawnWeapon(TSubclassOf<class AWeapon> weaponToSpawn);
-	void EqipWeapon(AWeapon* weapon);
-	void SwitchWeaponMesh(AWeapon* weapon);
+	bool IsSwitchingWeapon;
 };

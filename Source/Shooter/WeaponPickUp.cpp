@@ -17,7 +17,7 @@ void AWeaponPickUp::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	//Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 }
 
 void AWeaponPickUp::Tick(float DeltaTime)
@@ -27,10 +27,10 @@ void AWeaponPickUp::Tick(float DeltaTime)
 
 void AWeaponPickUp::OnIntateraction()
 {
-	if (Player == nullptr) return;
+	//if (Player == nullptr) return;
 
 	//TODO: use event from blueprint
-	Player->SpawnWeapon(WeaponToSpawn);
+	//Player->SpawnWeapon(WeaponToSpawn);
 	if (!bPickup)
 	{
 		bPickup = true;

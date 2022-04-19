@@ -2,13 +2,10 @@
 
 
 #include "PlayerCharacter.h"
-#include "WeaponPickUp.h"
+
 #include <Runtime/Engine/Classes/Kismet/KismetSystemLibrary.h>
 #include <Runtime/Engine/Public/DrawDebugHelpers.h>
 #include "Shooter/MyHUD.h"
-#include <Shooter/PlayerCharacter.h>
-
-
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()
@@ -87,7 +84,9 @@ void APlayerCharacter::Interact()
 	if (AWeaponPickUp* hitActor = Cast<AWeaponPickUp>(HitDetails.GetActor()))
 	{
 		UE_LOG(LogTemp, Log, TEXT("Hit %s"), *hitActor->GetName());
+		hitActor->bPickup = true;
 		hitActor->OnIntateraction();
+		SpawnWeapon(hitActor->WeaponToSpawn);
 	}
 }
 

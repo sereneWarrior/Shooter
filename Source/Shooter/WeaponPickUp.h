@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "PlayerCharacter.h"
+//#include "PlayerCharacter.h"
 #include "Weapon.h"
 
 #include "WeaponPickUp.generated.h"
@@ -18,7 +18,7 @@ public:
 	// Sets default values for this actor's properties
 	AWeaponPickUp();
 
-	APlayerCharacter* Player;
+	//APlayerCharacter* Player;
 	bool bPickup;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
