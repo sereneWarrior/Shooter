@@ -10,7 +10,6 @@
 UCrossHair::UCrossHair(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 	InterpSpeed = 30.0f;
-	Player = Cast<APlayerCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	FallingTarget = -60.0f;
 }
 
@@ -18,8 +17,17 @@ void UCrossHair::NativeTick(const FGeometry& Geometry, float DeltaTime)
 {
 	Super::NativeTick(Geometry, DeltaTime);
 
-	SetPanelVisibility();
+	CrossHairUpdate();
 }
+
+void UCrossHair::OnWeaponChanged(float spread, float speed, bool isVisible)
+{
+	BulletSpreadHUD = (spread / 0.5) * -1;
+	Speed = speed;
+	IsVisible = isVisible;
+	CrossHairUpdate();
+}
+
 
 void UCrossHair::MoveCrossHairs(float target)
 {
@@ -49,22 +57,22 @@ void UCrossHair::CrossHairUpdate()
 	auto isPanelVisible = SetPanelVisibility();
 	if (!isPanelVisible) return;
 
-	BulletSpreadHUD = (Player->CurrentWeapon->BulletSpread / 0.5) * -1;
+	//BulletSpreadHUD = (Player->CurrentWeapon->BulletSpread / 0.5) * -1;
 	GetWorld()->GetTimerManager().SetTimer(UnusedHandle, this, &UCrossHair::TranslateCrossHair, 0.01f, true);
 }
 
+// TODO: Add Listener to Player movement
 void UCrossHair::TranslateCrossHair()
 {
 	// If character is falling
-	if (Player->GetCharacterMovement()->IsFalling())
+	/*if (Player->GetCharacterMovement()->IsFalling())
 	{
 		// TODO: Is Falling is not yet used by PlayerCharacter.
 		MoveCrossHairs(FallingTarget);
-	}
-	float playerSpeed = Player->GetVelocity().Size();
-	if (playerSpeed > 1.0f)
+	}*/
+	if (Speed > 1.0f)
 	{
-		MoveCrossHairs((playerSpeed * -1) / 10.0f);
+		MoveCrossHairs((Speed * -1) / 10.0f);
 	}
 	// If character is standing
 	MoveCrossHairs(0);
@@ -72,7 +80,7 @@ void UCrossHair::TranslateCrossHair()
 
 bool UCrossHair::SetPanelVisibility()
 {
-	if (Player->Loadout == ELoadout::NoWeapon|| !Player->IsAiming)
+	if (!IsVisible)
 	{
 		Panel->SetVisibility(ESlateVisibility::Collapsed);
 		return false;

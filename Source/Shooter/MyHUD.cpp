@@ -18,12 +18,12 @@ void AMyHUD::DrawHUD()
 
 void AMyHUD::BeginPlay()
 {
-	if (!CrossHairClass){return;}
+	/*if (!CrossHairClass) { return; }
 	CrossHairWidget = CreateWidget<UCrossHair>(GetWorld(), CrossHairClass);
 	if (!CrossHairWidget) { return; }
 
 	CrossHairWidget->AddToViewport();
-	CrossHairWidget->CrossHairUpdate();
+	CrossHairWidget->CrossHairUpdate();*/
 
 	WeaponInfoWidget = CreateWidget<UWeaponInfoWidget>(GetWorld(), WeaponInfoClass);
 	if (!WeaponInfoWidget) return;
@@ -31,7 +31,3 @@ void AMyHUD::BeginPlay()
 	WeaponInfoWidget->AddToViewport();
 }
 
-void AMyHUD::UpdateCrossHairWidget()
-{
-	CrossHairWidget->CrossHairUpdate();
-}

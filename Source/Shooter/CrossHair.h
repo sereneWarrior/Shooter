@@ -6,7 +6,6 @@
 #include "Blueprint/UserWidget.h"
 #include <Runtime/UMG/Public/Components/CanvasPanel.h>
 #include "Components/SizeBox.h"
-#include <Shooter/PlayerCharacter.h>
 #include "TimerManager.h"
 
 #include "CrossHair.generated.h"
@@ -22,6 +21,8 @@ public:
 	UCrossHair(const FObjectInitializer& ObjectInitializer);
 
 	void CrossHairUpdate();
+	void OnWeaponChanged(float spread, float speed, bool isVisible);
+	float Speed;
 
 protected:
 
@@ -58,8 +59,8 @@ private:
 	float BulletSpreadHUD;
 	float Target;
 	float FallingTarget;
-	
-	APlayerCharacter* Player;
+	bool IsVisible;
+
 	FTimerHandle UnusedHandle;
 
 	void TranslateCrossHair();

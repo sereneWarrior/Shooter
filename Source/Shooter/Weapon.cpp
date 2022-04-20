@@ -13,18 +13,3 @@ AWeapon::AWeapon()
 	CurrentAmmoCount = 5;
 	AmmoType.FromString(FString("(AUTO)"));
 }
-
-// Called when the game starts or when spawned
-void AWeapon::BeginPlay()
-{
-	Super::BeginPlay();
-	
-}
-
-// Called every frame
-void AWeapon::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-

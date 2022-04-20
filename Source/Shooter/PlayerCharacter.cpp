@@ -22,6 +22,19 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	CrossHairWidget = CreateWidget<UCrossHair>(GetWorld(), CrossHairClass);
+	if (!CrossHairWidget) { return; }
+
+	CrossHairWidget->AddToViewport();
+}
+
+void APlayerCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (Loadout == ELoadout::HasGun) {
+		CrossHairWidget->Speed = this->GetVelocity().Size();
+	}
 }
 
 AWeapon* APlayerCharacter::HandleWeaponSpawning(TSubclassOf<class AWeapon> weaponClass, USkeletalMeshComponent* armsMesh)
@@ -148,9 +161,7 @@ void APlayerCharacter::SwitchWeaponMesh(AWeapon* weapon)
 {
 	check(weapon != nullptr);
 
-	AMyHUD* MyHud; 
 	int32 Index;
-	verify((MyHud = Cast<AMyHUD>(GetWorld()->GetFirstPlayerController()->GetHUD())) != nullptr);
 	
 	// Find the index of the current weapon in Weapon array.
 	// TODO: Would it make sense to fill array dynamically? If weapon is not in array add it?
@@ -184,10 +195,7 @@ void APlayerCharacter::SwitchWeaponMesh(AWeapon* weapon)
 	Weapons[Index]->SetActorHiddenInGame(false);
 	Loadout = ELoadout::HasGun;
 	CurrentWeapon = weapon;
-	if (MyHud)
-	{
-		MyHud->UpdateCrossHairWidget();
-	}
+	CrossHairWidget->OnWeaponChanged(CurrentWeapon->BulletSpread, this->GetVelocity().Size(), true);
 }
 
 void APlayerCharacter::MoveForward(float Value)

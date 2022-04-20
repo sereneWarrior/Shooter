@@ -20,7 +20,7 @@ public:
 	virtual void DrawHUD() override;
 	virtual void BeginPlay() override;
 
-	void UpdateCrossHairWidget();
+	//void UpdateCrossHairWidget();
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 		TSubclassOf<UUserWidget> CrossHairClass;

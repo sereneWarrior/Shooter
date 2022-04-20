@@ -8,6 +8,8 @@
 
 #include "Weapon.h"
 #include "WeaponPickUp.h"
+#include "CrossHair.h"
+#include "Components/WidgetComponent.h"
 
 #include "PlayerCharacter.generated.h"
 
@@ -32,6 +34,7 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);
@@ -46,7 +49,14 @@ private:
 	AWeapon* SpawnWeapon(TSubclassOf<class AWeapon> weaponToSpawn);
 	void SwitchWeaponMesh(AWeapon* weapon);
 
+	//UFUNCTION(BlueprintPure, Category = "Crosshair")
+		//bool HasGunEquipped() const { return Loadout == ELoadout::HasGun; }
+
+	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
+		TSubclassOf<UUserWidget> CrossHairClass;
+
 	TArray<AWeapon*> Weapons;
+	class UCrossHair* CrossHairWidget;
 
 public:	
 	// Called to bind functionality to input.
