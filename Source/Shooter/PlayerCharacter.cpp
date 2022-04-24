@@ -32,9 +32,6 @@ void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (Loadout == ELoadout::HasGun) {
-		CrossHairWidget->Speed = this->GetVelocity().Size();
-	}
 }
 
 AWeapon* APlayerCharacter::HandleWeaponSpawning(TSubclassOf<class AWeapon> weaponClass, USkeletalMeshComponent* armsMesh)
@@ -204,6 +201,10 @@ void APlayerCharacter::MoveForward(float Value)
 	{
 		AddMovementInput(GetActorForwardVector() * Value);
 	}
+
+	if (Loadout == ELoadout::HasGun) {
+		CrossHairWidget->Speed = this->GetVelocity().Size();
+	}
 }
 
 void APlayerCharacter::MoveRight(float Value)
@@ -211,5 +212,9 @@ void APlayerCharacter::MoveRight(float Value)
 	if (Value != 0.0f)
 	{
 		AddMovementInput(GetActorRightVector() * Value);
+	}
+
+	if (Loadout == ELoadout::HasGun) {
+		CrossHairWidget->Speed = this->GetVelocity().Size();
 	}
 }

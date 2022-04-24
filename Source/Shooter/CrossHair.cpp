@@ -11,6 +11,7 @@ UCrossHair::UCrossHair(const FObjectInitializer& ObjectInitializer) : Super(Obje
 {
 	InterpSpeed = 30.0f;
 	FallingTarget = -60.0f;
+	IsVisible = false;
 }
 
 void UCrossHair::NativeTick(const FGeometry& Geometry, float DeltaTime)
@@ -20,12 +21,13 @@ void UCrossHair::NativeTick(const FGeometry& Geometry, float DeltaTime)
 	CrossHairUpdate();
 }
 
+// Show cross hair and change settings
 void UCrossHair::OnWeaponChanged(float spread, float speed, bool isVisible)
 {
 	BulletSpreadHUD = (spread / 0.5) * -1;
-	Speed = speed;
 	IsVisible = isVisible;
-	CrossHairUpdate();
+	SetPanelVisibility();
+	//CrossHairUpdate();
 }
 
 

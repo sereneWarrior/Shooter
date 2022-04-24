@@ -49,8 +49,6 @@ private:
 	AWeapon* SpawnWeapon(TSubclassOf<class AWeapon> weaponToSpawn);
 	void SwitchWeaponMesh(AWeapon* weapon);
 
-	//UFUNCTION(BlueprintPure, Category = "Crosshair")
-		//bool HasGunEquipped() const { return Loadout == ELoadout::HasGun; }
 
 	UPROPERTY(EditDefaultsOnly, Category = "Widgets")
 		TSubclassOf<UUserWidget> CrossHairClass;
@@ -61,6 +59,7 @@ private:
 public:	
 	// Called to bind functionality to input.
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
 
 	void Interact();
 	
