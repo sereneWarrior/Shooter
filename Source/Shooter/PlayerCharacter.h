@@ -22,8 +22,7 @@ enum class ELoadout : uint8
 // Here thethe vale the Action key should pass in when the Input is pressed is defined. 
 // It uses an int32 as an Index to the Weapon Slot.
 // https://amiransari09.medium.com/unreal-engine-advance-key-binding-653266e1db22
-DECLARE_DELEGATE_OneParam(FInputSwitchWeaponDelegate, int);
-
+DECLARE_DELEGATE_OneParam(FInputSwitchWeaponDelegate, int);  
 UCLASS()
 class SHOOTER_API APlayerCharacter : public ACharacter
 {

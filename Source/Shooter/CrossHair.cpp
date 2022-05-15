@@ -63,7 +63,6 @@ void UCrossHair::CrossHairUpdate()
 	GetWorld()->GetTimerManager().SetTimer(UnusedHandle, this, &UCrossHair::TranslateCrossHair, 0.01f, true);
 }
 
-// TODO: Add Listener to Player movement
 void UCrossHair::TranslateCrossHair()
 {
 	// If character is falling
@@ -90,6 +89,13 @@ bool UCrossHair::SetPanelVisibility()
 
 	Panel->SetVisibility(ESlateVisibility::Visible);
 	return true;
+}
+
+void UCrossHair::SetPlayerSpeed(float speed)
+{
+	Speed = speed;
+	CrossHairUpdate();
+
 }
 
 

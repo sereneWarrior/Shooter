@@ -10,13 +10,22 @@
 
 #include "CrossHair.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPlayerWalking, float, PlayerVelocity);
 
-UCLASS()
+/**
+ * Base class for UMG Widgets that belong to a single Actor in the world via a WidgetComponent.
+ */
+UCLASS(Abstract)
 class SHOOTER_API UCrossHair : public UUserWidget
 {
 	GENERATED_BODY()
 	
 public:
+	UFUNCTION(BlueprintCallable, Category = "UI")
+		void SetPlayerSpeed(float speed);
+
+	UPROPERTY(BlueprintAssignable, Category = "UI")
+		FOnPlayerWalking OnPlayerWalking;
 
 	UCrossHair(const FObjectInitializer& ObjectInitializer);
 
@@ -66,4 +75,7 @@ private:
 	void TranslateCrossHair();
 	bool SetPanelVisibility();
 	void MoveCrossHairs(float target);
+
+	UPROPERTY(BlueprintReadWrite, Category = "UI", meta = (ExposeOnSpawn = true))
+		AActor* AttachedActor;
 };

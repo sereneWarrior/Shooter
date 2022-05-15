@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+
+#include "CrossHair.h"
+
 #include "MyGameModeBase.generated.h"
 
 /**
@@ -13,5 +16,4 @@ UCLASS()
 class SHOOTER_API AMyGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
 };
